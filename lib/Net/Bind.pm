@@ -1,12 +1,13 @@
 #-*-perl-*-
 #
 # Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+# Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 #
 # All rights reserved. This program is free software; you can
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Bind.pm,v 1.1 2001/06/08 07:10:05 rob Exp $
+# $Id: Bind.pm,v 1.3 2001/08/19 05:33:53 rob Exp $
 
 require 5.003;
 
@@ -19,7 +20,7 @@ use Carp;
 use vars qw($VERSION);
 
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 =head1 NAME
 
@@ -49,13 +50,15 @@ Futures releases will include:
 
 use Net::Bind::Resolv;
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Kevin Johnson E<lt>F<kjj@pobox.com>E<gt>
+Kevin Johnson <kjj@pobox.com>
+Rob Brown <rob@roobik.com>
 
 =head1 COPYRIGHT
 
 Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 
 All rights reserved. This program is free software; you can
 redistribute it and/or modify it under the same terms as Perl itself.

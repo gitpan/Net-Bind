@@ -7,9 +7,9 @@ print "1..47\n";
 
 my $good1 = "domain arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions debug\n";
 my $good2 = "search arf.fz fz\nnameserver 1.2.3.4\n";
-my $bad1 = "domain 1arf.fz\nnameserver 1000.2.3.4\nsortlist 1.0.0.0/255..0.0\noptions debug ndots:1\n";
-my $bad2 = "search arf.fz 1fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions arf\n";
-my $bad3 = "domain 1arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions debug ndots:1\n";
+my $bad1 = "domain arf-.fz\nnameserver 1000.2.3.4\nsortlist 1.0.0.0/255..0.0\noptions debug ndots:1\n";
+my $bad2 = "search arf.fz -arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions arf\n";
+my $bad3 = "domain thisistoolongforbindbecauseonesectionisoversixtythreecharecterslong.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions debug ndots:1\n";
 my $bad4 = "domain arf.fz\nnameserver a.2.3.4\nsortlist 1.0.0.0/255.0.0.0\noptions debug ndots:1\n";
 my $bad5 = "domain arf.fz\nnameserver 1.2.3.4\nsortlist 1..0.0/255.0.0.0\noptions debug ndots:1\n";
 my $bad6 = "domain arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/255..0.0\noptions debug ndots:1\n";
@@ -18,7 +18,7 @@ my $bad8 = "domain arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/2550.0.0.0\nopti
 my $bad9 = "domain arf.fz\nnameserver 1.2.3.4\nsortlist 1.0.0.0/2550.0.0.0\noptions debug ndots:a\n";
 
 my $resolver;
-okay_if(1, $resolver = new Net::Bind::Resolv);
+okay_if(1, $resolver = new Net::Bind::Resolv '');
 
 okay_if(2, $resolver->read_from_string($good1));
 okay_if(3, $resolver->default_policy_check);

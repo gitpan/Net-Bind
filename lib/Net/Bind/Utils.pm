@@ -1,25 +1,24 @@
 #-*-perl-*-
 #
 # Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+# Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 #
 # All rights reserved. This program is free software; you can
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Utils.pm,v 1.2 2001/06/08 07:13:49 rob Exp $
+# $Id: Utils.pm,v 1.5 2001/08/19 07:58:41 rob Exp $
 
-require 5.003;
+package Net::Bind::Utils;
 
 use strict;
-
+use vars qw($VERSION @ISA @EXPORT_OK);
 use Carp;
 use Exporter;
 
-use vars qw($VERSION @ISA @EXPORT_OK);
-
-$VERSION = '0.02';
+$VERSION = '0.03';
 @ISA = qw(Exporter);
-@EXPORT_OK = qw(valid_domain valid_ip valid_netmask);
+@EXPORT_OK = qw(valid_domain valid_domain_rfc1035 valid_ip valid_netmask);
 
 =head1 NAME
 
@@ -27,12 +26,12 @@ Net::Bind::Utils - various routines common across Net::Bind packages.
 
 =head1 SYNOPSIS
 
-  use Net::Bind::Utils;
+  use Net::Bind::Utils qw(valid_domain valid_ip);
 
 =head1 DESCRIPTION
 
-A catch-all place for various routines that useful across most, if not
-all, of the C<Net::Bind> interfaces.
+A catch-all place for various routines that are useful across most,
+if not all, of the C<Net::Bind> interfaces.
 
 This module is not designed to be subclassable.
 
@@ -40,12 +39,39 @@ This module is not designed to be subclassable.
 
 =head2 valid_domain($domain)
 
+Returns C<1> if the given C<$domain> string is defined
+and is a domain that bind is capable of resolving,
+otherwise returns C<0>.
+
+=cut
+
+sub valid_domain {
+  my $domain = shift;
+
+  return 0 unless defined($domain);
+  # Root domain is okay
+  return 1 if $domain eq ".";
+  # empty label is illegal
+  return 0 if $domain =~ /\.\./;
+  # Force rooting if not already done
+  $domain =~ s/([^\.])$/$1./;
+  # A preceeding "-" in any section is illegal
+  return 0 if $domain =~ /(^|\.)\-/;
+  # A trailing "-" in any section is illegal
+  return 0 if $domain =~ /\-\./;
+  # Make sure each section has between 1 and 63 characters
+  return 1 if $domain =~ /^([a-zA-Z0-9\-]{1,63}\.)+$/;
+  return 0;
+}
+
+=head2 valid_domain_rfc1035($domain)
+
 Returns C<1> if the given C<$domain> string is defined and is a valid
 rfc1035 domain name, otherwise returns C<0>.
 
 =cut
 
-sub valid_domain {
+sub valid_domain_rfc1035 {
   my $domain = shift;
 
   return 0 unless defined($domain);
@@ -61,7 +87,7 @@ sub valid_domain {
   # upper case and a through z in lower case
   # <digit> ::= any one of the ten digits 0 through 9
   my $label = '(?:[a-zA-Z](?:(?:[a-zA-Z\d\-]+)?[a-zA-Z\d])?)';
-  my $dom = "(?:(?:$label\.?){1,63}$label)";
+  my $dom = "(?:(?:$label\.?)*$label)";
 
   return ($domain =~ /^$dom$/);
 }
@@ -110,13 +136,15 @@ sub valid_netmask {
   return 1;
 }
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Kevin Johnson E<lt>F<kjj@pobox.com>E<gt>
+Kevin Johnson <kjj@pobox.com>
+Rob Brown <rob@roobik.com>
 
 =head1 COPYRIGHT
 
 Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 
 All rights reserved. This program is free software; you can
 redistribute it and/or modify it under the same terms as Perl itself.

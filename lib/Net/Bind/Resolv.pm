@@ -1,27 +1,25 @@
 #-*-perl-*-
 #
 # Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+# Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 #
 # All rights reserved. This program is free software; you can
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Resolv.pm,v 1.1 2001/06/08 07:10:05 rob Exp $
+# $Id: Resolv.pm,v 1.4 2001/08/19 08:00:32 rob Exp $
 
 require 5.003;
 
-use strict;
-
 package Net::Bind::Resolv;
 
+use strict;
+use vars qw($VERSION);
 use Carp;
 use IO::File;
+use Net::Bind::Utils qw(valid_domain valid_ip valid_netmask);
 
-use Net::Bind::Utils;
-
-use vars qw($VERSION);
-
-$VERSION = '0.02';
+$VERSION = '0.04';
 
 =head1 NAME
 
@@ -39,14 +37,14 @@ C</etc/resolv.conf> data.
 Here is an example snippet of code:
 
   use Net::Bind::Resolv;
-  my $res = new Net::Bind::Resolv('/etc/resolv.conf');
+  my $res = new Net::Bind::Resolv;
   print $res->domain, "\n";
 
 Or how about:
 
   use Net::Bind::Resolv;
   use IO::File;
-  my $res = new Net::Bind::Resolv;
+  my $res = new Net::Bind::Resolv '';
   $res->comment("Programmatically generated\nDo not edit by hand");
   $res->domain('arf.fz');
   $res->nameservers('0.0.0.0');
@@ -58,14 +56,15 @@ Or how about:
 =head2 new([$filename])
 
 Returns a reference to a new C<Net::Bind::Resolv> object.  If
-C<$filename> is given then use that pass the value to a call to
-C<read_from_file>.
+no C<$filename> is supplied, /etc/resolv.conf is used as a default.
+A non-empty C<$filename> will be passed to C<read_from_file>.
 
 =cut
 
 sub new {
   my $class = shift;
   my $file = shift;
+  $file = "/etc/resolv.conf" if !defined $file;
 
   my $self = {};
 
@@ -73,7 +72,7 @@ sub new {
 
   $self->clear;
 
-  return undef if (defined($file) && !$self->read_from_file($file));
+  return undef if (length($file) && !$self->read_from_file($file));
 
   return $self;
 }
@@ -81,7 +80,7 @@ sub new {
 =head2 read_from_string($string)
 
 Populates the object with the parsed contents of C<$string>.  Returns
-C<1> is no errors were encounters, otherwise it returns C<0>.
+C<1> if no errors were encounters, otherwise it returns C<0>.
 
 The following directives are understood.
 
@@ -236,12 +235,12 @@ dereferences as they are added.
 
 sub nameservers {
   my $self = shift;
-  my @list = @_;
 
-  if (@list) {
-    for my $item (@list) {
-      push @{$self->{Nameservers}}, ((ref($item) eq 'ARRAY') ?
-				     ref($item) : $item);
+  if (@_) {
+    $self->{Nameservers} = [];
+    for my $item (@_) {
+      push @{$self->{Nameservers}}, (UNIVERSAL::isa($item, 'ARRAY') ?
+				     @$item : $item);
     }
   }
 
@@ -263,12 +262,12 @@ are added.
 
 sub searchlist {
   my $self = shift;
-  my @list = @_;
 
-  if (@list) {
-    for my $item (@list) {
-      push @{$self->{Searchlist}}, ((ref($item) eq 'ARRAY') ?
-				    ref($item) : $item);
+  if (@_) {
+    $self->{Searchlist} = [];
+    for my $item (@_) {
+      push @{$self->{Searchlist}}, (UNIVERSAL::isa($item, 'ARRAY') ?
+				    @$item : $item);
     }
   }
 
@@ -289,12 +288,12 @@ dereferenced as they are added.
 
 sub sortlist {
   my $self = shift;
-  my @list = @_;
 
-  if (@list) {
-    for my $item (@list) {
-      push @{$self->{Sortlist}}, ((ref($item) eq 'ARRAY') ?
-				  ref($item) : $item);
+  if (@_) {
+    $self->{Sortlist} = [];
+    for my $item (@_) {
+      push @{$self->{Sortlist}}, (UNIVERSAL::isa($item, 'ARRAY') ?
+				  @$item : $item);
     }
   }
 
@@ -314,12 +313,12 @@ dereferenced as they are added.
 
 sub options {
   my $self = shift;
-  my @list = @_;
 
-  if (@list) {
-    for my $item (@list) {
-      push @{$self->{Options}}, ((ref($item) eq 'ARRAY') ?
-				  ref($item) : $item);
+  if (@_) {
+    $self->{Options} = [];
+    for my $item (@_) {
+      push @{$self->{Options}}, (UNIVERSAL::isa($item, 'ARRAY') ?
+				 @$item : $item);
     }
   }
 
@@ -345,14 +344,13 @@ they are added.
 
 sub comments {
   my $self = shift;
-  my @comments = @_;
 
-  if (@comments) {
-    $self->{Comments} = undef;
-    for my $comment (@comments) {
-      for my $line (split(/\n/, ((ref($comment) eq 'ARRAY') ?
-				 ref($comment) : $comment))) {
-	push @{$self->{Comments}}, $line;
+  if (@_) {
+    $self->{Comments} = [];
+    for my $comment (@_) {
+      for my $line (split(/\n/, (UNIVERSAL::isa($comment, 'ARRAY') ?
+                                 join("\n", @$comment) : $comment))) {
+        push @{$self->{Comments}}, $line;
       }
     }
   }
@@ -380,9 +378,9 @@ sub as_string {
   my $self = shift;
   my $str;
 
-#  if (my $comments = $self->comments) {
-#    $str .= "; " . join("\n; ", @{$comments}) . "\n";
-#  }
+  if (my $comments = $self->comments) {
+    $str .= "; " . join("\n; ", @{$comments}) . "\n";
+  }
   if (my $domain = $self->domain) {
     $str .= "domain $domain\n";
   }
@@ -575,13 +573,15 @@ important to apply the appropriate policy methods against the object
 before writing it to a file that will be used by the resolver.
 Consider yourself warned!
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Kevin Johnson E<lt>F<kjj@pobox.com>E<gt>
+Kevin Johnson <kjj@pobox.com>
+Rob Brown <rob@roobik.com>
 
 =head1 COPYRIGHT
 
 Copyright (c) 1997 Kevin Johnson <kjj@pobox.com>.
+Copyright (c) 2001 Rob Brown <rob@roobik.com>.
 
 All rights reserved. This program is free software; you can
 redistribute it and/or modify it under the same terms as Perl itself.

@@ -12,7 +12,7 @@ my $data3 = "search arf.fz fz\ndomain arf.fz\nnameserver 1.2.3.4\nnameserver 4.3
 my $resolver;
 $resolver = new Net::Bind::Resolv('arf');
 okay_if(1, !defined($resolver));
-okay_if(2, $resolver = new Net::Bind::Resolv);
+okay_if(2, $resolver = new Net::Bind::Resolv '');
 okay_if(3, $resolver->read_from_string($data1));
 okay_if(4, $resolver->domain eq 'arf.fz');
 okay_if(5, $resolver->qtynameservers == 2);

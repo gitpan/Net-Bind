@@ -10,7 +10,7 @@ my $data2 = "search arf.fz fz\nnameserver 1.2.3.4\nnameserver 4.3.2.1\n";
 
 my $resolver;
 
-okay_if(1, $resolver = new Net::Bind::Resolv);
+okay_if(1, $resolver = new Net::Bind::Resolv '');
 okay_if(2, $resolver->read_from_string($data1));
 okay_if(3, $resolver->domain eq 'arf.fz');
 my @sortlist;
