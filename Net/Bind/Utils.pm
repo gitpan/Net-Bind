@@ -17,7 +17,7 @@ use Exporter;
 
 use vars qw($VERSION @ISA @EXPORT_OK);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(valid_domain valid_ip valid_netmask);
 
@@ -56,8 +56,8 @@ sub valid_domain {
   # <letter> ::= any one of the 52 alphabetic characters A through Z in
   # upper case and a through z in lower case
   # <digit> ::= any one of the ten digits 0 through 9
-  my $label = "(?:[a-zA-Z](?:(?:[a-zA-Z\d\-]+)?[a-zA-Z\d])?)";
-  my $dom = "(?:(?:$label\.?)*$label)";
+  my $label = '(?:[a-zA-Z](?:(?:[a-zA-Z\d\-]+)?[a-zA-Z\d])?)';
+  my $dom = "(?:(?:$label\.?){1,63}$label)";
 
   return ($domain =~ /^$dom$/);
 }

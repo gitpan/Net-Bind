@@ -21,7 +21,7 @@ use Net::Bind::Utils;
 
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 =head1 NAME
 
@@ -172,8 +172,8 @@ sub read_from_file {
 
   my $fh = new IO::File($file) or return undef;
 
-  my $rs = $fh->input_record_separator;
-  $fh->input_record_separator(undef);
+  local $/ = undef;
+
   my $string = <$fh>;
   $fh->close;
 
@@ -238,7 +238,7 @@ sub nameservers {
   my $self = shift;
   my @list = @_;
 
-  if (defined(@list)) {
+  if (@list) {
     for my $item (@list) {
       push @{$self->{Nameservers}}, ((ref($item) eq 'ARRAY') ?
 				     ref($item) : $item);
@@ -265,7 +265,7 @@ sub searchlist {
   my $self = shift;
   my @list = @_;
 
-  if (defined(@list)) {
+  if (@list) {
     for my $item (@list) {
       push @{$self->{Searchlist}}, ((ref($item) eq 'ARRAY') ?
 				    ref($item) : $item);
@@ -291,7 +291,7 @@ sub sortlist {
   my $self = shift;
   my @list = @_;
 
-  if (defined(@list)) {
+  if (@list) {
     for my $item (@list) {
       push @{$self->{Sortlist}}, ((ref($item) eq 'ARRAY') ?
 				  ref($item) : $item);
@@ -316,7 +316,7 @@ sub options {
   my $self = shift;
   my @list = @_;
 
-  if (defined(@list)) {
+  if (@list) {
     for my $item (@list) {
       push @{$self->{Options}}, ((ref($item) eq 'ARRAY') ?
 				  ref($item) : $item);
@@ -347,7 +347,7 @@ sub comments {
   my $self = shift;
   my @comments = @_;
 
-  if (defined(@comments)) {
+  if (@comments) {
     $self->{Comments} = undef;
     for my $comment (@comments) {
       for my $line (split(/\n/, ((ref($comment) eq 'ARRAY') ?
@@ -380,9 +380,9 @@ sub as_string {
   my $self = shift;
   my $str;
 
-  if (my $comments = $self->comments) {
-    $str .= "; " . join("\n; ", @{$comments}) . "\n";
-  }
+#  if (my $comments = $self->comments) {
+#    $str .= "; " . join("\n; ", @{$comments}) . "\n";
+#  }
   if (my $domain = $self->domain) {
     $str .= "domain $domain\n";
   }

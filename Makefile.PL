@@ -3,8 +3,8 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-	      NAME => 'Net',
-	      VERSION => '0.01',
+	      NAME => 'Net::Bind',
+	      VERSION => '0.02',
 	      DISTNAME => 'Net-Bind',
 	      'dist' => { COMPRESS => 'gzip', SUFFIX => '.gz' },
 	     );
