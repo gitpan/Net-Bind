@@ -6,7 +6,7 @@
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Resolv.pm,v 1.1 1997/03/30 01:55:36 kjj Exp $
+# $Id: Resolv.pm,v 1.1 2001/06/08 07:10:05 rob Exp $
 
 require 5.003;
 

@@ -6,7 +6,7 @@
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Utils.pm,v 1.1 1997/03/30 01:55:36 kjj Exp $
+# $Id: Utils.pm,v 1.2 2001/06/08 07:13:49 rob Exp $
 
 require 5.003;
 
@@ -24,6 +24,10 @@ $VERSION = '0.02';
 =head1 NAME
 
 Net::Bind::Utils - various routines common across Net::Bind packages.
+
+=head1 SYNOPSIS
+
+  use Net::Bind::Utils;
 
 =head1 DESCRIPTION
 

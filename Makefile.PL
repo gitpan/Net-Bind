@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
 	      NAME => 'Net::Bind',
-	      VERSION => '0.02',
+	      VERSION_FROM => 'lib/Net/Bind.pm',
 	      DISTNAME => 'Net-Bind',
 	      'dist' => { COMPRESS => 'gzip', SUFFIX => '.gz' },
 	     );

@@ -6,7 +6,7 @@
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Bind.pm,v 1.1 1997/03/30 01:55:36 kjj Exp $
+# $Id: Bind.pm,v 1.1 2001/06/08 07:10:05 rob Exp $
 
 require 5.003;
 
@@ -19,7 +19,7 @@ use Carp;
 use vars qw($VERSION);
 
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 =head1 NAME
 
