@@ -7,7 +7,7 @@
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Resolv.pm,v 1.4 2001/08/19 08:00:32 rob Exp $
+# $Id: Resolv.pm,v 1.5 2002/04/18 02:22:47 rob Exp $
 
 require 5.003;
 
@@ -19,7 +19,7 @@ use Carp;
 use IO::File;
 use Net::Bind::Utils qw(valid_domain valid_ip valid_netmask);
 
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 =head1 NAME
 

@@ -7,7 +7,7 @@
 # redistribute it and/or modify it under the same terms as Perl
 # itself.
 #
-# $Id: Utils.pm,v 1.5 2001/08/19 07:58:41 rob Exp $
+# $Id: Utils.pm,v 1.6 2002/04/18 02:22:47 rob Exp $
 
 package Net::Bind::Utils;
 
@@ -16,7 +16,7 @@ use vars qw($VERSION @ISA @EXPORT_OK);
 use Carp;
 use Exporter;
 
-$VERSION = '0.03';
+$VERSION = '0.05';
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(valid_domain valid_domain_rfc1035 valid_ip valid_netmask);
 

@@ -5,6 +5,8 @@ README
 TODO
 BUGS
 CHANGES
+Net-Bind.spec
+Net-Bind.spec.PL
 lib/Net/Bind.pm
 lib/Net/Bind/Resolv.pm
 lib/Net/Bind/Utils.pm

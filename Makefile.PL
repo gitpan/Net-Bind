@@ -9,11 +9,22 @@ WriteMakefile(
 	      'dist' => { COMPRESS => 'gzip', SUFFIX => '.gz' },
 	     );
 
-sub MY::test {
+package MY;
+
+sub test {
   q{
 TEST_VERBOSE=0
 
 test:
 	$(FULLPERL) t/TEST $(TEST_VERBOSE)
 };
+}
+
+sub processPL {
+  my $self = shift;
+  my $block = $self->SUPER::processPL(@_);
+  # "Version:" in spec needs to match
+  # "$VERSION" from VERSION_FROM
+  $block =~ s%(spec.PL\s*)$%$1 \$\(VERSION_FROM\)%m;
+  $block;
 }
